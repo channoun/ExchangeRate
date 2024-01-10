@@ -11,17 +11,46 @@ const App = () => {
 
   const getRates = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:500/exchangeRate");
+      const response = await fetch("http://127.0.0.1:5000/exchangeRate");
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
-      setBuyUsdRate(data.usd);
-      setSellUsdRate(data.lbp);
+      setBuyUsdRate(data["lbp_to_usd"]);
+      setSellUsdRate(data["usd_to_lbp"]);
     } catch (err) {
       console.error(err.message);
     }
 
   }
-  useEffect(() => { getRates(); }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Validate inputs first
+    if (lbpInput === "" || usdInput === "") {
+      console.error("Missing input fields");
+    } else {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/transaction", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            "usd_amount": usdInput,
+            "lbp_amount": lbpInput,
+            "usd_to_lbp": transactionType === "usd-to-lbp"
+          })
+        });
+        const data = await response.json();
+        console.log(data);
+        setLbpInput("");
+        setUsdInput("");
+      } catch (err) {
+        console.error(err.message);
+      }
+    }
+  }
+
+  useEffect(() => { getRates(); }, [lbpInput, usdInput]);
 
   return (
     <div className="App">
@@ -42,13 +71,7 @@ const App = () => {
           <label htmlFor="lbp-to-usd">LBP to USD</label>
           <input type="radio" onClick={e => setTransactionType("lbp-to-usd")} id="lbp-to-usd" name="transaction" />
         </div>
-        <input type="submit" value="Add Transaction" onClick={e => {
-          e.preventDefault(); console.log({
-            lbpAmount: parseFloat(lbpInput),
-            usdAmount: parseFloat(usdInput),
-            transactionType: transactionType === "usd-to-lbp" ? "BUY" : "SELL"
-          });
-        }} />
+        <input type="submit" value="Add Transaction" onClick={handleSubmit} />
       </form>
     </div>
   );
