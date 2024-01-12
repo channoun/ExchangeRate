@@ -62,5 +62,5 @@
   </RadioButton>
   <RadioButton text="Sell USD" toggleGroup="$transactionType" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
   <Button text="Add Transaction" GridPane.rowIndex="10" textAlignment="CENTER" GridPane.columnSpan="2"
-          GridPane.halignment="CENTER"/>
+          GridPane.halignment="CENTER" onAction="#addTransaction"/>
 </GridPane>
