@@ -12,14 +12,6 @@ class Transaction(db.Model):
             usd_amount=usd_amount, lbp_amount=lbp_amount, usd_to_lbp=usd_to_lbp
         )
 
-    def toDict(self):
-        return {
-            "id": self.id,
-            "usd_amount": self.usd_amount,
-            "lbp_amount": self.lbp_amount,
-            "usd_to_lbp": self.usd_to_lbp,
-        }
-
 
 class TransactionSchema(ma.Schema):
     class Meta:

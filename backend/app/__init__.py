@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
+from flask_bcrypt import Bcrypt
 from urllib.parse import quote_plus
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -9,6 +10,7 @@ import os
 
 db = SQLAlchemy()
 ma = Marshmallow()
+bcrypt = Bcrypt()
 
 
 def create_app():
@@ -23,8 +25,9 @@ def create_app():
 
     db.init_app(app)
     ma.init_app(app)
+    bcrypt.init_app(app)
 
     # Uncomment for unit testing
-    # app.app_context().push()
+    app.app_context().push()
 
     return app
