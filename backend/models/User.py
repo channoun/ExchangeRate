@@ -8,7 +8,7 @@ class User(db.Model):
 
     def __init__(self, user_name, password):
         super(User, self).__init__(user_name=user_name)
-        hashed_password = bcrypt.generate_password_hash(password)
+        self.hashed_password = bcrypt.generate_password_hash(password)
 
 
 class UserSchema(ma.Schema):
