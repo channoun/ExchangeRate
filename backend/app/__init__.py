@@ -3,10 +3,12 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from urllib.parse import quote_plus
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
 import os
 
 db = SQLAlchemy()
+ma = Marshmallow()
 
 
 def create_app():
@@ -20,8 +22,9 @@ def create_app():
     ] = f"mysql+pymysql://{os.getenv('MYSQL_USERNAME')}:{quote_plus(os.getenv('MYSQL_PASSWORD'))}@localhost:3306/exchange"
 
     db.init_app(app)
+    ma.init_app(app)
 
     # Uncomment for unit testing
-    app.app_context().push()
+    # app.app_context().push()
 
     return app

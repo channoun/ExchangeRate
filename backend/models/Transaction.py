@@ -1,4 +1,4 @@
-from app import db
+from app import db, ma
 
 
 class Transaction(db.Model):
@@ -19,3 +19,12 @@ class Transaction(db.Model):
             "lbp_amount": self.lbp_amount,
             "usd_to_lbp": self.usd_to_lbp,
         }
+
+
+class TransactionSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "usd_amount", "lbp_amount", "usd_to_lbp")
+        model = Transaction
+
+
+transaction_schema = TransactionSchema()

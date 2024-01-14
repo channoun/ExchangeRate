@@ -1,5 +1,5 @@
 from app import db
-from models.Transaction import Transaction
+from models.Transaction import Transaction, transaction_schema
 from flask import request, Response, jsonify, Blueprint
 
 transaction_bp = Blueprint("transaction", __name__)
@@ -17,4 +17,4 @@ def transaction():
     transaction = Transaction(usd_amount, lbp_amount, usd_to_lbp)
     db.session.add(transaction)
     db.session.commit()
-    return jsonify(transaction.toDict())
+    return jsonify(transaction_schema.dump(transaction))
