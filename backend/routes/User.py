@@ -13,7 +13,9 @@ def create_token(user_id):
         "iat": datetime.datetime.utcnow(),
         "sub": user_id,
     }
-    return jwt.encode(payload, os.getenv("SECRET_KEY"), algorithm="HS256")
+    return jwt.encode(payload, os.getenv("SECRET_KEY"), algorithm="HS256").decode(
+        "utf-8"
+    )
 
 
 user_bp = Blueprint("user", __name__)

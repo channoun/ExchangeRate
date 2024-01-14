@@ -2,7 +2,7 @@ from app import db, bcrypt, ma
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(30), unique=True)
     hashed_password = db.Column(db.String(128))
 
