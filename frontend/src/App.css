@@ -83,3 +83,9 @@ input[type="submit"] {
 input[type="submit"]:hover {
   background-color: #005fa3;
 }
+
+.nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
