@@ -5,12 +5,11 @@ import datetime
 
 exchange_bp = Blueprint("exchange", __name__)
 
-END_TIME = datetime.datetime.now()
-START_TIME = END_TIME - datetime.timedelta(days=3)
-
 
 @exchange_bp.route("/exchangeRate", methods=["GET"])
 def exchange():
+    END_TIME = datetime.datetime.now()
+    START_TIME = END_TIME - datetime.timedelta(days=3)
     usd_to_lbp = Transaction.query.filter(
         Transaction.added_date.between(START_TIME, END_TIME),
         Transaction.usd_to_lbp == True,
@@ -32,4 +31,9 @@ def exchange():
             sm += transaction.lbp_amount / transaction.usd_amount
         lbp_to_usd_average = sm / len(lbp_to_usd)
 
-    return jsonify({"usd_to_lbp": usd_to_lbp_average, "lbp_to_usd": lbp_to_usd_average})
+    return jsonify(
+        {
+            "usd_to_lbp": usd_to_lbp_average,
+            "lbp_to_usd": lbp_to_usd_average,
+        }
+    )

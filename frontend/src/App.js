@@ -1,8 +1,9 @@
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AppBar, Toolbar, Typography, Button, Snackbar, Alert, TextField, Box, InputAdornment } from '@mui/material';
 import UserCredentialsDialog from './UserCredentialsDialog/UserCredentialsDialog';
 import { getUserToken, saveUserToken, clearUserToken } from "./localStorage";
+import { DataGrid } from "@mui/x-data-grid";
 
 const States = {
   PENDING: "PENDING",
@@ -10,6 +11,13 @@ const States = {
   USER_LOG_IN: "USER_LOG_IN",
   USER_AUTHENTICATED: "USER_AUTHENTICATED",
 };
+
+const dataGridColumns = [
+  { field: 'added_date', headerName: 'Added Date', flex: 2 },
+  { field: 'lbp_amount', headerName: 'LBP', flex: 1 },
+  { field: 'usd_amount', headerName: 'USD', flex: 1 },
+  { field: 'usd_to_lbp', headerName: 'USD to LBP', flex: 1 },
+];
 
 const SERVER_URL = "http://127.0.0.1:5000";
 
@@ -24,6 +32,7 @@ const App = () => {
   let [authState, setAuthState] = useState(States.PENDING);
   let [usdBuy, setUsdBuy] = useState(0);
   let [usdSell, setUsdSell] = useState(0);
+  let [userTransactions, setUserTransactions] = useState([]);
 
   const getRates = async () => {
     try {
@@ -45,10 +54,21 @@ const App = () => {
       console.error("Missing input fields");
     } else {
       try {
-        const response = await fetch(`${SERVER_URL}/transaction`, {
+        const response = await fetch(`${SERVER_URL}/transaction`, userToken ? {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${userToken}`
+          },
+          body: JSON.stringify({
+            "usd_amount": usdInput,
+            "lbp_amount": lbpInput,
+            "usd_to_lbp": transactionType === "usd-to-lbp"
+          })
+        } : {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             "usd_amount": usdInput,
@@ -57,7 +77,6 @@ const App = () => {
           })
         });
         const data = await response.json();
-        console.log(data);
         setLbpInput("");
         setUsdInput("");
       } catch (err) {
@@ -69,7 +88,7 @@ const App = () => {
   const handleDialogClose = () => { setAuthState(States.PENDING); }
 
   const login = async (username, password) => {
-    const response = await fetch(`${SERVER_URL}/authentication`, {
+    return fetch(`${SERVER_URL}/authentication`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -78,15 +97,17 @@ const App = () => {
         user_name: username,
         password: password,
       }),
-    });
-    const body = await response.json();
-    setAuthState(States.USER_AUTHENTICATED);
-    setUserToken(body.token);
-    saveUserToken(userToken);
+    })
+      .then((response) => response.json())
+      .then((body) => {
+        setAuthState(States.USER_AUTHENTICATED);
+        setUserToken(body.token);
+        saveUserToken(body.token);
+      });
   }
 
   const createUser = async (username, password) => {
-    const response = await fetch(`${SERVER_URL}/user`, {
+    return fetch(`${SERVER_URL}/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -95,9 +116,25 @@ const App = () => {
         user_name: username,
         password: password,
       }),
-    });
-    return await login(username, password);
+    }).then((response) => login(username, password));
   }
+
+  const fetchUserTransactions = useCallback(() => {
+    fetch(`${SERVER_URL}/transaction`, {
+      headers: {
+        Authorization: `bearer ${userToken}`,
+      },
+    })
+      .then((response) => response.json())
+
+      .then((transactions) => setUserTransactions(transactions));
+  }, [userToken]);
+
+  useEffect(() => {
+    if (userToken) {
+      fetchUserTransactions();
+    }
+  }, [fetchUserTransactions, userToken]);
 
   useEffect(() => { getRates(); }, [lbpInput, usdInput]);
 
@@ -147,10 +184,9 @@ const App = () => {
             <h2>Today's Exchange Rate</h2>
             <p>
               Buy USD: <span id="buy-usd-rate">{buyUsdRate}LBP</span>
-              Sell USD: <span id="sell-usd-rate">{sellUsdRate}LBP</span>
+              Sell USD: <span id="sell-usd-rate">{parseFloat(sellUsdRate).toFixed(2).toString()}LBP</span>
             </p>
           </div>
-          <hr />
           <div className="inner-wrapper">
             <h2>Rate Calculator</h2>
             <div className="calculator">
@@ -166,7 +202,7 @@ const App = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                      }}>{usdBuy * buyUsdRate} LBP</Box>
+                      }}>{(usdBuy * buyUsdRate).toFixed(2)} LBP</Box>
                     </InputAdornment>
                   </div>
                 ),
@@ -184,7 +220,7 @@ const App = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                      }}>{usdSell * sellUsdRate} LBP</Box>
+                      }}>{(usdSell * sellUsdRate).toFixed(2)} LBP</Box>
                     </InputAdornment>
                   </div>
                 ),
@@ -208,6 +244,15 @@ const App = () => {
             <input type="submit" value="Add Transaction" onClick={handleSubmit} />
           </form>
         </div>
+        {userToken && (
+          <div className="wrapper">
+            <Typography variant="h5" id="title">Your Transactions</Typography>
+            <DataGrid
+              rows={userTransactions}
+              columns={dataGridColumns}
+              autoHeight />
+          </div>
+        )}
       </div>
     </div >
   );
