@@ -1,7 +1,9 @@
 package com.charbelhannoun.currencyexchange.api
 
 import com.charbelhannoun.currencyexchange.api.model.ExchangeRates
+import com.charbelhannoun.currencyexchange.api.model.Token
 import com.charbelhannoun.currencyexchange.api.model.Transaction
+import com.charbelhannoun.currencyexchange.api.model.User
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,5 +27,9 @@ object ExchangeService {
         fun getExchangeRates(): Call<ExchangeRates>
         @POST("/transaction")
         fun addTransaction(@Body transaction: Transaction): Call<Any>
+        @POST("/user")
+        fun addUser(@Body user: User): Call<User>
+        @POST("/authentication")
+        fun authenticate(@Body user: User): Call<Token>
     }
 }
