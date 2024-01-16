@@ -8,38 +8,54 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.RadioGroup
-import android.widget.TextView
+import androidx.viewpager2.widget.ViewPager2
 import com.charbelhannoun.currencyexchange.api.Authentication
 import com.charbelhannoun.currencyexchange.api.ExchangeService
-import com.charbelhannoun.currencyexchange.api.model.ExchangeRates
 import com.charbelhannoun.currencyexchange.api.model.Transaction
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.textfield.TextInputLayout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
-    private var buyUsdTextView: TextView?=null
-    private var sellUsdTextView: TextView?=null
     private var fab: FloatingActionButton? = null
     private var transactionDialog: View? = null
     private var menu: Menu? = null
+    private var tabLayout: TabLayout? = null
+    private var tabsViewPager: ViewPager2? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Authentication.initialize(this)
         setContentView(R.layout.activity_main)
-        buyUsdTextView = findViewById(R.id.txtBuyUsdRate)
-        sellUsdTextView = findViewById(R.id.txtSellUsdRate)
 
         fab = findViewById(R.id.fab)
         fab?.setOnClickListener { view ->
             showDialog()
         }
-
-        fetchRates()
+        tabLayout = findViewById(R.id.tabLayout)
+        tabsViewPager = findViewById(R.id.tabsViewPager)
+        tabLayout?.tabMode = TabLayout.MODE_FIXED
+        tabLayout?.isInlineLabel = true
+        // Enable Swipe
+        tabsViewPager?.isUserInputEnabled = true
+        // Set the ViewPager Adapter
+        val adapter = TabsPagerAdapter(supportFragmentManager, lifecycle)
+        tabsViewPager?.adapter = adapter
+        TabLayoutMediator(tabLayout!!, tabsViewPager!!) { tab, position ->
+            when (position) {
+                0 -> {
+                    tab.text = "Exchange"
+                }
+                1 -> {
+                    tab.text = "Transactions"
+                }
+            }
+        }.attach()
     }
     private fun showDialog() {
         transactionDialog = LayoutInflater.from(this)
@@ -64,7 +80,6 @@ class MainActivity : AppCompatActivity() {
                 transaction.usdToLbp = usdToLbp
                 addTransaction(transaction)
                 dialog.dismiss()
-                fetchRates()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
@@ -72,25 +87,6 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun fetchRates() {
-        ExchangeService.exchangeApi().getExchangeRates().enqueue(object :
-            Callback<ExchangeRates> {
-            override fun onResponse(call: Call<ExchangeRates>, response:
-            Response<ExchangeRates>) {
-                val responseBody: ExchangeRates? = response.body();
-                if (responseBody != null) {
-                    val usdToLbp = responseBody.usdToLbp
-                    val lbpToUsd = responseBody.lbpToUsd
-                    buyUsdTextView?.apply {text = lbpToUsd.toString()}
-                    sellUsdTextView?.apply {text = usdToLbp.toString()}
-                }
-            }
-            override fun onFailure(call: Call<ExchangeRates>, t: Throwable) {
-                return;
-                TODO("Not yet implemented")
-            }
-        })
-    }
     private fun addTransaction(transaction: Transaction) {
         ExchangeService.exchangeApi().addTransaction(transaction).enqueue(object :
             Callback<Any> {
