@@ -1,6 +1,6 @@
 import './App.css';
 import { useState, useEffect, useCallback } from 'react';
-import { AppBar, Toolbar, Typography, Button, Snackbar, Alert, TextField, Box, InputAdornment } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Snackbar, Alert, TextField, Box, InputAdornment, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio } from '@mui/material';
 import UserCredentialsDialog from './UserCredentialsDialog/UserCredentialsDialog';
 import { getUserToken, saveUserToken, clearUserToken } from "./localStorage";
 import { DataGrid } from "@mui/x-data-grid";
@@ -27,7 +27,7 @@ const App = () => {
 
   let [lbpInput, setLbpInput] = useState("");
   let [usdInput, setUsdInput] = useState("");
-  let [transactionType, setTransactionType] = useState("usd-to-lbp");
+  let [transactionType, setTransactionType] = useState("lbp-to-usd");
   let [userToken, setUserToken] = useState(getUserToken());
   let [authState, setAuthState] = useState(States.PENDING);
   let [usdBuy, setUsdBuy] = useState(0);
@@ -79,6 +79,7 @@ const App = () => {
         const data = await response.json();
         setLbpInput("");
         setUsdInput("");
+        fetchUserTransactions();
       } catch (err) {
         console.error(err.message);
       }
@@ -229,28 +230,47 @@ const App = () => {
           </div>
         </div>
         <div className="wrapper">
-          <h2>New Transaction</h2>
-          <form id="transaction-form">
-            <label htmlFor="lbp-amount">Enter LBP amount: </label>
-            <TextField type="number" id="lbp-amount" value={lbpInput} onChange={e => setLbpInput(e.target.value)} fullWidth variant="outlined" />
-            <label htmlFor="usd-amount">Enter USD amount: </label>
-            <TextField type="number" id="usd-amount" value={usdInput} onChange={e => setUsdInput(e.target.value)} fullWidth variant="outlined" />
-            <div id="radio-container">
-              <label htmlFor="usd-to-lbp">USD to LBP</label>
-              <input type="radio" onClick={e => setTransactionType("usd-to-lbp")} id="usd-to-lbp" name="transaction" />
-              <label htmlFor="lbp-to-usd">LBP to USD</label>
-              <input type="radio" onClick={e => setTransactionType("lbp-to-usd")} id="lbp-to-usd" name="transaction" />
-            </div>
-            <input type="submit" value="Add Transaction" onClick={handleSubmit} />
+          <form onSubmit={handleSubmit} id="transaction-form">
+            <FormControl component="fieldset">
+              <h2>New Transaction</h2>
+              <TextField
+                id="lbp-amount"
+                label="LBP Amount"
+                value={lbpInput}
+                onChange={(e) => setLbpInput(e.target.value)}
+                margin="normal"
+                type="number"
+                fullWidth
+              />
+              <TextField
+                id="usd-amount"
+                label="USD Amount"
+                value={usdInput}
+                onChange={(e) => setUsdInput(e.target.value)}
+                margin="normal"
+                type="number"
+                fullWidth
+              />
+            </FormControl>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Transaction Type</FormLabel>
+              <RadioGroup row value={transactionType} onChange={(e) => setTransactionType(e.target.value)}>
+                <FormControlLabel value="lbp-to-usd" control={<Radio />} label="Buy USD" />
+                <FormControlLabel value="usd-to-lbp" control={<Radio />} label="Sell USD" />
+              </RadioGroup>
+            </FormControl>
+            <Button type="submit" variant="contained" color="primary">
+              Add Transaction
+            </Button>
           </form>
         </div>
         {userToken && (
           <div className="wrapper">
-            <Typography variant="h5" id="title">Your Transactions</Typography>
+            <h2>Your Transactions</h2>
             <DataGrid
               rows={userTransactions}
               columns={dataGridColumns}
-              autoHeight />
+              pageSizeOptions={[5]} />
           </div>
         )}
       </div>

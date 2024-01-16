@@ -31,8 +31,7 @@ body {
   width: 100%;
 }
 
-h2,
-#title {
+h2 {
   font-size: 1.5rem;
   color: #777;
   margin-bottom: 20px;
@@ -69,14 +68,6 @@ input[type="number"] {
   font-size: 1rem;
 }
 
-#radio-container {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 15px;
-  margin-top: 15px;
-}
-
 input[type="radio"] {
   transform: scale(1.2);
   margin-right: 10px;
@@ -102,31 +93,6 @@ input[type="submit"]:hover {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-}
-
-hr {
-  border: none;
-  height: 1px;
-  background-color: #ccc;
-  margin: 2rem 0;
-  position: relative;
-}
-
-hr::before,
-hr::after {
-  content: "";
-  position: absolute;
-  width: 3rem;
-  height: 1px;
-  background-color: #ccc;
-}
-
-hr::before {
-  left: -5rem;
-}
-
-hr::after {
-  right: -5rem;
 }
 
 .inner-wrapper {
