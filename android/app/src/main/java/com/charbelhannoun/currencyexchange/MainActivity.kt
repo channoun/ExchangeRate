@@ -88,8 +88,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addTransaction(transaction: Transaction) {
-        ExchangeService.exchangeApi().addTransaction(transaction).enqueue(object :
-            Callback<Any> {
+        ExchangeService.exchangeApi().addTransaction(
+            transaction,
+            if (Authentication.getToken() != null) "Bearer ${Authentication.getToken()}" else null
+        ).enqueue(object : Callback<Any> {
             override fun onResponse(call: Call<Any>, response:
             Response<Any>) {
                 Snackbar.make(fab as View, "Transaction added!",
