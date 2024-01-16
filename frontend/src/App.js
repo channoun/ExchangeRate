@@ -1,6 +1,6 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, Button, Snackbar, Alert } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Snackbar, Alert, TextField, Box, InputAdornment } from '@mui/material';
 import UserCredentialsDialog from './UserCredentialsDialog/UserCredentialsDialog';
 import { getUserToken, saveUserToken, clearUserToken } from "./localStorage";
 
@@ -22,6 +22,8 @@ const App = () => {
   let [transactionType, setTransactionType] = useState("usd-to-lbp");
   let [userToken, setUserToken] = useState(getUserToken());
   let [authState, setAuthState] = useState(States.PENDING);
+  let [usdBuy, setUsdBuy] = useState(0);
+  let [usdSell, setUsdSell] = useState(0);
 
   const getRates = async () => {
     try {
@@ -139,25 +141,74 @@ const App = () => {
       >
         <Alert severity="success">Success</Alert>
       </Snackbar>
-      <h1>Exchange Rate</h1>
-      <h2>Today's exchange Rate</h2>
-      <p>
-        Buy USD: <span id="buy-usd-rate">{buyUsdRate}</span>
-        Sell USD: <span id="sell-usd-rate">{sellUsdRate}</span>
-      </p>
-      <form id="transaction-form">
-        <label htmlFor="lbp-amount">Enter LBP amount: </label>
-        <input type="number" id="lbp-amount" value={lbpInput} onChange={e => setLbpInput(e.target.value)} />
-        <label htmlFor="usd-amount">Enter USD amount: </label>
-        <input type="number" id="usd-amount" value={usdInput} onChange={e => setUsdInput(e.target.value)} />
-        <div id="radio-container">
-          <label htmlFor="usd-to-lbp">USD to LBP</label>
-          <input type="radio" onClick={e => setTransactionType("usd-to-lbp")} id="usd-to-lbp" name="transaction" />
-          <label htmlFor="lbp-to-usd">LBP to USD</label>
-          <input type="radio" onClick={e => setTransactionType("lbp-to-usd")} id="lbp-to-usd" name="transaction" />
+      <div className="container">
+        <div className="wrapper">
+          <div className="inner-wrapper">
+            <h2>Today's Exchange Rate</h2>
+            <p>
+              Buy USD: <span id="buy-usd-rate">{buyUsdRate}LBP</span>
+              Sell USD: <span id="sell-usd-rate">{sellUsdRate}LBP</span>
+            </p>
+          </div>
+          <hr />
+          <div className="inner-wrapper">
+            <h2>Rate Calculator</h2>
+            <div className="calculator">
+              <TextField fullWidth label="Buy USD amount" type="number" variant="outlined" value={usdBuy} onChange={(e) => {
+                setUsdBuy(e.target.value);
+              }} InputProps={{
+                endAdornment: (
+                  <div style={{ display: 'flex' }}>
+                    <InputAdornment position="end">
+                      <Box sx={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>{usdBuy * buyUsdRate} LBP</Box>
+                    </InputAdornment>
+                  </div>
+                ),
+              }} />
+
+              <TextField fullWidth label="Sell USD amount" type="number" variant="outlined" value={usdSell} onChange={(e) => {
+                setUsdSell(e.target.value);
+              }} InputProps={{
+                endAdornment: (
+                  <div style={{ display: 'flex' }}>
+                    <InputAdornment position="end">
+                      <Box sx={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>{usdSell * sellUsdRate} LBP</Box>
+                    </InputAdornment>
+                  </div>
+                ),
+              }} />
+            </div>
+          </div>
         </div>
-        <input type="submit" value="Add Transaction" onClick={handleSubmit} />
-      </form>
+        <div className="wrapper">
+          <h2>New Transaction</h2>
+          <form id="transaction-form">
+            <label htmlFor="lbp-amount">Enter LBP amount: </label>
+            <TextField type="number" id="lbp-amount" value={lbpInput} onChange={e => setLbpInput(e.target.value)} fullWidth variant="outlined" />
+            <label htmlFor="usd-amount">Enter USD amount: </label>
+            <TextField type="number" id="usd-amount" value={usdInput} onChange={e => setUsdInput(e.target.value)} fullWidth variant="outlined" />
+            <div id="radio-container">
+              <label htmlFor="usd-to-lbp">USD to LBP</label>
+              <input type="radio" onClick={e => setTransactionType("usd-to-lbp")} id="usd-to-lbp" name="transaction" />
+              <label htmlFor="lbp-to-usd">LBP to USD</label>
+              <input type="radio" onClick={e => setTransactionType("lbp-to-usd")} id="lbp-to-usd" name="transaction" />
+            </div>
+            <input type="submit" value="Add Transaction" onClick={handleSubmit} />
+          </form>
+        </div>
+      </div>
     </div >
   );
 }
