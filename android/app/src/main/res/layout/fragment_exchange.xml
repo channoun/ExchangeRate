@@ -29,7 +29,7 @@
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3">
+        app:layout_constraintVertical_bias="0.2">
 
         <TextView
             android:text="Buy USD"
@@ -56,7 +56,7 @@
         app:layout_constraintLeft_toRightOf="@id/vwBuyUsd"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3">
+        app:layout_constraintVertical_bias="0.2">
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
@@ -70,5 +70,111 @@
             android:text="Fetching USD rate"
             android:textStyle="bold"/>
     </LinearLayout>
+    <TextView
+        android:id="@+id/txtCalculator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:textStyle="bold"
+        android:text="Rate calculator"
+        android:textSize="24sp"
+        app:layout_constraintTop_toBottomOf="@id/vwSellUsd"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/vwConvert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtCalculator"
+        app:layout_constraintVertical_bias="0">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="205dp"
+            android:layout_height="60dp"
+
+            android:layout_weight="1"
+            android:hint="Enter USD Amount"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtInptExchangeAmount"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="number"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <RadioGroup
+            android:id="@+id/rdGrpTransactionType"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/txtInptExchangeAmount">
+            <RadioButton
+                android:id="@+id/rdBtnBuyUsd"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:text="Buy USD" />
+            <RadioButton
+                android:id="@+id/rdBtnSellUsd"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:text="Sell USD" />
+        </RadioGroup>
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/vwConvert"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+            <TextView
+                android:id="@+id/txtConv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Converted amount:"
+                android:textSize="20sp"
+                android:layout_marginTop="30px"
+                app:layout_constraintTop_toBottomOf="@id/txtInptExchangeAmount"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/convAmount"/>
+            <TextView
+                android:id="@+id/convAmount"
+                android:layout_width="300px"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="30px"
+                android:layout_marginLeft="10px"
+                app:layout_constraintTop_toBottomOf="@id/txtInptExchangeAmount"
+                app:layout_constraintLeft_toRightOf="@id/txtConv"
+                app:layout_constraintRight_toRightOf="@id/unitLbp"/>
+            <TextView
+                android:id="@+id/unitLbp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="LBP"
+                android:layout_marginTop="30px"
+                android:layout_marginLeft="10px"
+                app:layout_constraintTop_toBottomOf="@id/txtInptExchangeAmount"
+                app:layout_constraintLeft_toRightOf="@id/convAmount"
+                app:layout_constraintRight_toRightOf="parent"/>
+        </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
