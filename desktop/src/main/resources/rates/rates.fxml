@@ -43,7 +43,7 @@
          GridPane.columnIndex="0"
          GridPane.rowIndex="7"
   />
-  <TextField fx:id="lbpTextField"
+  <TextField fx:id="usdTextField"
              GridPane.columnIndex="0"
              GridPane.rowIndex="8"
   />
@@ -51,7 +51,7 @@
          GridPane.columnIndex="1"
          GridPane.rowIndex="7"
   />
-  <TextField fx:id="usdTextField"
+  <TextField fx:id="lbpTextField"
              GridPane.columnIndex="1"
              GridPane.rowIndex="8"
   />

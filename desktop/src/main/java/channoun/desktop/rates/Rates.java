@@ -3,6 +3,7 @@ package channoun.desktop.rates;
 import channoun.desktop.api.ExchangeService;
 import channoun.desktop.api.model.ExchangeRates;
 import channoun.desktop.api.model.Transaction;
+import channoun.desktop.Authentication;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
@@ -49,15 +50,16 @@ public class Rates {
                 ((RadioButton)
                         transactionType.getSelectedToggle()).getText().equals("Sell USD")
         );
-
-        ExchangeService.exchangeApi().addTransaction(transaction, null).enqueue(new Callback<Object>() {
+        String userToken = Authentication.getInstance().getToken();
+        String authHeader = userToken != null ? "Bearer " + userToken : null;
+        ExchangeService.exchangeApi().addTransaction(transaction, authHeader).enqueue(new Callback<Object>() {
           @Override
           public void onResponse(Call<Object> call, Response<Object>
                   response) {
-              fetchRates();
               Platform.runLater(() -> {
                   usdTextField.setText("");
                   lbpTextField.setText("");
+                  fetchRates();
               });
           }
           @Override

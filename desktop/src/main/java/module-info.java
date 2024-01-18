@@ -8,7 +8,7 @@ module channoun.desktop {
     requires retrofit2.converter.gson;
 
 
-    opens channoun.desktop.api.model to gson;
+    opens channoun.desktop.api.model to gson, javafx.base;
     exports channoun.desktop;
     opens channoun.desktop to gson, javafx.fxml;
     exports channoun.desktop.api;
@@ -19,4 +19,6 @@ module channoun.desktop {
     opens channoun.desktop.login to javafx.fxml;
     exports channoun.desktop.register;
     opens channoun.desktop.register to javafx.fxml;
+    exports channoun.desktop.transactions;
+    opens channoun.desktop.transactions to javafx.fxml;
 }

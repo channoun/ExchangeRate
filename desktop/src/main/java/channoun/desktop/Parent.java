@@ -61,7 +61,7 @@ public class Parent implements Initializable, OnPageCompleteListener{
                 case RATES ->
                         "/rates/rates.fxml";
                 case TRANSACTIONS ->
-                        "/rates/rates.fxml";
+                        "/transactions/transactions.fxml";
                 case LOGIN ->
                         "/login/login.fxml";
                 case REGISTER ->
