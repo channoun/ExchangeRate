@@ -1,4 +1,4 @@
-package channoun.desktop;
+package channoun.desktop.rates;
 
 import channoun.desktop.api.ExchangeService;
 import channoun.desktop.api.model.ExchangeRates;
@@ -13,7 +13,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Controller {
+public class Rates {
     public Label buyUsdRateLabel;
     public Label sellUsdRateLabel;
     public TextField lbpTextField;
@@ -50,7 +50,7 @@ public class Controller {
                         transactionType.getSelectedToggle()).getText().equals("Sell USD")
         );
 
-        ExchangeService.exchangeApi().addTransaction(transaction).enqueue(new Callback<Object>() {
+        ExchangeService.exchangeApi().addTransaction(transaction, null).enqueue(new Callback<Object>() {
           @Override
           public void onResponse(Call<Object> call, Response<Object>
                   response) {

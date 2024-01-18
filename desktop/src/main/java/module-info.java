@@ -4,6 +4,7 @@ module channoun.desktop {
     requires retrofit2;
     requires java.sql;
     requires gson;
+    requires java.prefs;
     requires retrofit2.converter.gson;
 
 
@@ -12,4 +13,10 @@ module channoun.desktop {
     opens channoun.desktop to gson, javafx.fxml;
     exports channoun.desktop.api;
     opens channoun.desktop.api to gson, javafx.fxml;
+    exports channoun.desktop.rates;
+    opens channoun.desktop.rates to gson, javafx.fxml;
+    exports channoun.desktop.login;
+    opens channoun.desktop.login to javafx.fxml;
+    exports channoun.desktop.register;
+    opens channoun.desktop.register to javafx.fxml;
 }
